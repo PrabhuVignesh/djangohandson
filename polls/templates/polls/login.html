@@ -1,0 +1,15 @@
+{% block content %}
+	{% if form.error %}
+		<p class = 'error'>Invalid user name or password !!!</p>
+	{%endif%}
+
+	<form action="/auth_view/" method="post">{% csrf_token %}
+		<label for="username">UserName:</label>
+		<input type="text" name="username" value="" id="username" />
+		<label for="password">Password:</label>
+		<input type="text" name="password" value="" id="password" />
+
+		<input type="submit" value="login"/>
+
+	</form>
+{% endblock%}

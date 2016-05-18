@@ -24,3 +24,13 @@ class Answers(models.Model):
 	question = models.ForeignKey(Question,on_delete=models.CASCADE)
 	answer_text = models.CharField(max_length=200)
 	poles = models.IntegerField(default=0)
+
+@python_2_unicode_compatible
+class User(models.Model):
+	def __str__(self):
+		return self.user_name
+
+	user_name = models.CharField(max_length=200)
+	password = models.CharField(max_length=200)
+	email = models.CharField(max_length=200)
+	token = models.CharField(max_length=200)
