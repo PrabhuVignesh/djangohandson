@@ -11,4 +11,5 @@ urlpatterns = [
 	url(r'^auth_view/$', views.auth_view, name = 'auth_view'),
 	url(r'^loggedin/$', views.loggedin, name = 'loggedin'),
 	url(r'^invalid/$', views.invalid, name = 'invalid'),
+	url(r'^name/(?P<name>[a-z\-]+)/$',views.name, name = 'name'),
 ]

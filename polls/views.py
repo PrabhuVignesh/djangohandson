@@ -10,10 +10,21 @@ from .models import Question,Answers
 
 
 def index(request):
+	name = 'prabhu'
+	session_name = 'prabhu'
+
+	if 'name' in request.COOKIES:
+		name = request.COOKIES['name']
+
+	if 'name' in request.session:
+		session_name = request.session['name']
+
 	question_list = Question.objects.order_by('-pub_date')[:3]
 	template = loader.get_template('polls/index.html')
 	context={
-		'question_list' : question_list,	
+		'question_list' : question_list,
+		'name' : name,
+		'session_name' :session_name,	
 	}
 	#return HttpResponse(template.render(context, request))
 	return render(request, 'polls/index.html', context)
@@ -36,6 +47,7 @@ def poll(request,question_id):
 # Create your views here.
 
 def login(request):
+
 	c ={}
 	c.update(csrf(request))
 	return render_to_response('polls/login.html', c)
@@ -60,3 +72,11 @@ def invalid(request):
 def logout(request):
 	auth.logout(request)
 	return render_to_response('polls/logout.html')
+
+
+def name(request, name='prabhu'):
+	response = HttpResponse("Name ==== %s " % name)
+	response.set_cookie('name',name)
+	
+	response.session['name'] = name
+	return response
