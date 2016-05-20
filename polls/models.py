@@ -29,15 +29,6 @@ class Answers(models.Model):
 class User(models.Model):
 	def __str__(self):
 		return self.user_name
-		
-	def token(userid):
-		obj = self.objects.get(pk=userid)
-		obj.token = uuid.uuid4().hex
-		try:
-		    obj.save()
-		except IntegrityError as e:
-		   return false
-		return true
 
 	user_name = models.CharField(max_length=200)
 	password = models.CharField(max_length=200)

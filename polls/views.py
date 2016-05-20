@@ -53,27 +53,35 @@ def login(request):
 	return render_to_response('polls/login.html', c)
 
 def auth_view(request):
-	print "---------------"
-	print User.objects.get(email=request.POST.get('username','')).first
-	print "---------------"
+
 	username = request.POST.get('username','')
 	password = request.POST.get('password','')
-	user = auth.authenticate(username=username,password=password)
-
-	if user is not None:
-		auth.login(request,user)
-		return HttpResponseRedirect('/loggedin')
+	token = request.POST.get('csrfmiddlewaretoken','')
+	user_obj = User.objects.filter(email=request.POST.get('username',''))[0]
+	if user_obj is not None:
+		user_obj.token = token
+		user_obj.save()
+		response = HttpResponseRedirect('/polls/loggedin')
+		response.set_cookie('user_id',user_obj.id)	
+		request.session['user_id'] = user_obj.id
+		return response
 	else:
-		return HttpResponseRedirect('/invalid')
+		return HttpResponseRedirect('/polls/invalid')
 
 def loggedin(request):
-	return render_to_response('polls/loggedin.html',{'fullname': request.user.username})
+	if request.session['user_id'] == "":
+		user = User.objects.get(pk=request.session['user_id']).user_name
+	else:
+		user = 'logout'
+
+	return render_to_response('polls/loggedin.html',{'fullname':user })
 
 def invalid(request):
 	return render_to_response('polls/invalid.html')
 
 def logout(request):
-	auth.logout(request)
+	#response.set_cookie('user_id',user_obj.id)	
+	request.session['user_id'] = ""
 	return render_to_response('polls/logout.html')
 
 
