@@ -6,7 +6,8 @@ from django.core.context_processors import csrf
 from django.http import HttpResponseRedirect
 from django.template import loader
 from django.http import Http404
-from .models import Question,Answers
+from .models import Question,Answers,User
+from django.contrib.auth.forms import UserCreationForm
 
 
 def index(request):
@@ -47,12 +48,14 @@ def poll(request,question_id):
 # Create your views here.
 
 def login(request):
-
 	c ={}
 	c.update(csrf(request))
 	return render_to_response('polls/login.html', c)
 
 def auth_view(request):
+	print "---------------"
+	print User.objects.get(email=request.POST.get('username','')).first
+	print "---------------"
 	username = request.POST.get('username','')
 	password = request.POST.get('password','')
 	user = auth.authenticate(username=username,password=password)
@@ -80,3 +83,25 @@ def name(request, name='prabhu'):
 	
 	response.session['name'] = name
 	return response
+
+def register(request):
+	if request.method == 'POST':
+		email = request.POST.get('email','')
+		user_name = request.POST.get('email','').split('@')[0]
+		password = request.POST.get('password','')
+		#form = UserCreationForm(request.POST)
+		user_obj = User(email=email, user_name=user_name, password=password)
+		
+		print "---------------------"
+		print user_obj.save()
+		print "---------------------"
+		if user_obj.save():
+			return HttpResponseRedirect('polls/register_ack')			
+
+	args = {}
+	args.update(csrf(request))
+	args['form'] = UserCreationForm()
+	return render_to_response('polls/login.html',args)
+
+def register_ack(request):
+	return render_to_response('register_ack.html')

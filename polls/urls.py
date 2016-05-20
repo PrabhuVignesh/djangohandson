@@ -12,4 +12,6 @@ urlpatterns = [
 	url(r'^loggedin/$', views.loggedin, name = 'loggedin'),
 	url(r'^invalid/$', views.invalid, name = 'invalid'),
 	url(r'^name/(?P<name>[a-z\-]+)/$',views.name, name = 'name'),
+	url(r'^register/$',views.register, name='register'),
+	url(r'^register_ack/$', views.register_ack, name = 'register_ack'),
 ]
