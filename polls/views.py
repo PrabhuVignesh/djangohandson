@@ -8,6 +8,7 @@ from django.template import loader
 from django.http import Http404
 from .models import Question,Answers,User
 from django.contrib.auth.forms import UserCreationForm
+from forms import PollsRegistrations
 
 
 def index(request):
@@ -72,7 +73,7 @@ def auth_view(request):
 def loggedin(request):
 	if request.session['user_id'] != "logout":
 		user = User.objects.get(pk=request.session['user_id']).user_name
-		return render_to_response('polls/loggedin.html',{'fullname':user })
+		return render_to_response('polls/loggedin.html',{'fullname':user })	
 	else:
 		user = 'logout'
 		return render_to_response('polls/logout.html',{'fullname':user })
@@ -96,21 +97,22 @@ def name(request, name='prabhu'):
 
 def register(request):
 	if request.method == 'POST':
-		email = request.POST.get('email','')
-		user_name = request.POST.get('email','').split('@')[0]
-		password = request.POST.get('password','')
-		#form = UserCreationForm(request.POST)
-		user_obj = User(email=email, user_name=user_name, password=password)
-		
-		print "---------------------"
-		print user_obj.save()
-		print "---------------------"
-		if user_obj.save():
-			return HttpResponseRedirect('polls/register_ack')			
+		# email = request.POST.get('email','')
+		# user_name = request.POST.get('email','').split('@')[0]
+		# password = request.POST.get('password','')
+		# user_obj = User(email=email, user_name=user_name, password=password)
+		# if user_obj.save():
+		# 	return HttpResponseRedirect('polls/register_ack')			
 
+		form = PollsRegistrations(request.POST)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('polls/register_ack')	
+	else:
+		form = PollsRegistrations()
 	args = {}
 	args.update(csrf(request))
-	args['form'] = UserCreationForm()
+	args['form'] = form
 	return render_to_response('polls/login.html',args)
 
 def register_ack(request):
