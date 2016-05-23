@@ -50,7 +50,8 @@ def poll(request,question_id):
 def login(request):
 	c ={}
 	c.update(csrf(request))
-	return render_to_response('polls/login.html', c)
+	flag = "register"
+	return render_to_response('polls/login.html',c)
 
 def auth_view(request):
 
@@ -69,19 +70,20 @@ def auth_view(request):
 		return HttpResponseRedirect('/polls/invalid')
 
 def loggedin(request):
-	if request.session['user_id'] == "":
+	if request.session['user_id'] != "logout":
 		user = User.objects.get(pk=request.session['user_id']).user_name
+		return render_to_response('polls/loggedin.html',{'fullname':user })
 	else:
 		user = 'logout'
-
-	return render_to_response('polls/loggedin.html',{'fullname':user })
-
+		return render_to_response('polls/logout.html',{'fullname':user })
+	
 def invalid(request):
 	return render_to_response('polls/invalid.html')
 
 def logout(request):
 	#response.set_cookie('user_id',user_obj.id)	
-	request.session['user_id'] = ""
+	#del request.session['user_id']
+	request.session['user_id'] = "logout"
 	return render_to_response('polls/logout.html')
 
 
