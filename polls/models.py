@@ -34,3 +34,28 @@ class User(models.Model):
 	password = models.CharField(max_length=200)
 	email = models.CharField(max_length=200)
 	token = models.CharField(max_length=200)
+
+@python_2_unicode_compatible
+class Post(models.Model):
+	def __str__(self):
+		return self.title
+
+	title = models.CharField(max_length=200)
+	content = models.TextField(max_length=500)
+	pub_date = models.DateTimeField('date published')
+
+@python_2_unicode_compatible
+class Likes(models.Model):
+	def __str__(self):
+		return post
+
+	post = models.ForeignKey(Post,on_delete=models.CASCADE)
+	user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+
+@python_2_unicode_compatible
+class Comments(models.Model):
+	def __str__(self):
+		return post
+	post = models.ForeignKey(Post,on_delete=models.CASCADE)
+	user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+	comment_cnt = models.TextField()

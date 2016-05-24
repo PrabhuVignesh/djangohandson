@@ -1,0 +1,6 @@
+<form accept-charset="utf-8" action="/polls/post_create/" method = 'POST' class="simform">{% csrf_token %}
+	<ul>
+		{{form.as_p}}
+	</ul>
+	<input class="submit" name="commit" type="submit" value="Create Post" />
+</form>

@@ -6,9 +6,9 @@ from django.core.context_processors import csrf
 from django.http import HttpResponseRedirect
 from django.template import loader
 from django.http import Http404
-from .models import Question,Answers,User
+from .models import Question,Answers,User,Post,Likes,Comments
 from django.contrib.auth.forms import UserCreationForm
-from forms import PollsRegistrations
+from forms import PollsRegistrations,PostCreation
 
 
 def index(request):
@@ -97,17 +97,17 @@ def name(request, name='prabhu'):
 
 def register(request):
 	if request.method == 'POST':
-		# email = request.POST.get('email','')
-		# user_name = request.POST.get('email','').split('@')[0]
-		# password = request.POST.get('password','')
-		# user_obj = User(email=email, user_name=user_name, password=password)
-		# if user_obj.save():
-		# 	return HttpResponseRedirect('polls/register_ack')			
+		email = request.POST.get('email','')
+		user_name = request.POST.get('email','').split('@')[0]
+		password = request.POST.get('password','')
+		user_obj = User(email=email, user_name=user_name, password=password)
+		if user_obj.save():
+			return HttpResponseRedirect('polls/register_ack')			
 
-		form = PollsRegistrations(request.POST)
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect('polls/register_ack')	
+		# form = PollsRegistrations(request.POST)
+		# if form.is_valid():
+		# 	form.save()
+		# 	return HttpResponseRedirect('polls/register_ack')	
 	else:
 		form = PollsRegistrations()
 	args = {}
@@ -117,3 +117,34 @@ def register(request):
 
 def register_ack(request):
 	return render_to_response('register_ack.html')
+
+def post_create(request):
+	if request.method == 'POST':
+		form = PostCreation(request.POST)
+
+		if form.is_valid():
+			print "-------------------"
+			print form 
+			print "-------------------"
+			form.save()
+			return HttpResponseRedirect('/polls/post_list')
+		else:
+
+			return HttpResponse("Name ==== %s " % form)
+	else:
+		form = PostCreation()
+	a = {}
+	a.update(csrf(request))
+	a['form'] = form
+	return render_to_response('polls/post_create.html',a)
+
+def post_list(request):
+	post_list = Post.objects.order_by('pub_date')[:5]
+	context={
+		'post_list' : post_list,	
+	}
+	return render_to_response('polls/post_list.html',context)
+
+def like(request,post_id = None):
+	print "---------------------"
+	print post_id

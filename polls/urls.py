@@ -14,4 +14,9 @@ urlpatterns = [
 	url(r'^name/(?P<name>[a-z\-]+)/$',views.name, name = 'name'),
 	url(r'^register/$',views.register, name='register'),
 	url(r'^register_ack/$', views.register_ack, name = 'register_ack'),
+	url(r'^post_create/$', views.post_create, name = 'post_create'),
+	url(r'^post_list/$', views.post_list, name = 'post_list'),
+	url(r'^likes/(?P<post_id>\d+)/$', views.like, name = 'like'),
+
+
 ]
