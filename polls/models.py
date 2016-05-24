@@ -47,15 +47,14 @@ class Post(models.Model):
 @python_2_unicode_compatible
 class Likes(models.Model):
 	def __str__(self):
-		return post
-
+		return self.post.title
 	post = models.ForeignKey(Post,on_delete=models.CASCADE)
 	user_id = models.ForeignKey(User,on_delete=models.CASCADE)
 
 @python_2_unicode_compatible
 class Comments(models.Model):
 	def __str__(self):
-		return post
+		return self.post.title
 	post = models.ForeignKey(Post,on_delete=models.CASCADE)
 	user_id = models.ForeignKey(User,on_delete=models.CASCADE)
 	comment_cnt = models.TextField()

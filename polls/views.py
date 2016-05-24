@@ -9,7 +9,9 @@ from django.http import Http404
 from .models import Question,Answers,User,Post,Likes,Comments
 from django.contrib.auth.forms import UserCreationForm
 from forms import PollsRegistrations,PostCreation
-
+from django.shortcuts import get_object_or_404
+from json import dumps, loads
+import json
 
 def index(request):
 	name = 'prabhu'
@@ -123,9 +125,6 @@ def post_create(request):
 		form = PostCreation(request.POST)
 
 		if form.is_valid():
-			print "-------------------"
-			print form 
-			print "-------------------"
 			form.save()
 			return HttpResponseRedirect('/polls/post_list')
 		else:
@@ -139,12 +138,19 @@ def post_create(request):
 	return render_to_response('polls/post_create.html',a)
 
 def post_list(request):
-	post_list = Post.objects.order_by('pub_date')[:5]
+	post_list = Post.objects.order_by('pub_date')
+	like_count =[]
+	for post in post_list:
+		like_count.append(Likes.objects.filter(post = post.id).count())
+
 	context={
 		'post_list' : post_list,	
+		'like_count' : like_count,
 	}
 	return render_to_response('polls/post_list.html',context)
 
 def like(request,post_id = None):
-	print "---------------------"
-	print post_id
+	user = User.objects.get(pk=request.session['user_id'])
+	like = Likes.objects.create(post_id=post_id,user_id=user)
+	cannot = "true"
+	return HttpResponse(json.dumps(cannot),content_type="application/json")
