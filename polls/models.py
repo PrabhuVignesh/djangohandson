@@ -48,6 +48,7 @@ class Post(models.Model):
 class Likes(models.Model):
 	def __str__(self):
 		return self.post.title
+
 	post = models.ForeignKey(Post,on_delete=models.CASCADE)
 	user_id = models.ForeignKey(User,on_delete=models.CASCADE)
 
